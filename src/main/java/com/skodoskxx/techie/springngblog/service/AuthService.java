@@ -1,9 +1,15 @@
 package com.skodoskxx.techie.springngblog.service;
 
+import com.skodoskxx.techie.springngblog.dto.LoginRequest;
 import com.skodoskxx.techie.springngblog.dto.RegisterRequest;
 import com.skodoskxx.techie.springngblog.model.User;
 import com.skodoskxx.techie.springngblog.repository.UserRepo;
+import com.skodoskxx.techie.springngblog.security.JwtProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +20,10 @@ public class AuthService {
     private UserRepo userRepo;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private AuthenticationManager authenticationManager;
+    @Autowired
+    private JwtProvider jwtProvider;
 
     public void signup(RegisterRequest registerRequest) {
         User user = new User();
@@ -26,4 +36,13 @@ public class AuthService {
     private String encodePassword(String password){
         return passwordEncoder.encode(password);
     }
+
+    public AuthenticationResponse login(LoginRequest loginRequest) {
+        Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),
+                loginRequest.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(authenticate);
+        String authenticationToken = jwtProvider.generateToken(authenticate);
+        return new AuthenticationResponse(authenticationToken, loginRequest.getUsername());
+    }
+
 }
