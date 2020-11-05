@@ -30,7 +30,7 @@ public class Post {
     private String content;
 
     @Column
-    private Instant createOn;
+    private Instant createdOn;
 
     @Column
     private Instant updatedOn;

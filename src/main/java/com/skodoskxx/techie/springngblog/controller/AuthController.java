@@ -3,6 +3,7 @@ package com.skodoskxx.techie.springngblog.controller;
 import com.skodoskxx.techie.springngblog.dto.LoginRequest;
 import com.skodoskxx.techie.springngblog.dto.RegisterRequest;
 import com.skodoskxx.techie.springngblog.service.AuthService;
+import com.skodoskxx.techie.springngblog.service.AuthenticationResponse;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,7 +27,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public void login(@RequestBody LoginRequest loginRequest){
-        authService.login(loginRequest);
+    public AuthenticationResponse login(@RequestBody LoginRequest loginRequest){
+        return authService.login(loginRequest);
     }
 }
